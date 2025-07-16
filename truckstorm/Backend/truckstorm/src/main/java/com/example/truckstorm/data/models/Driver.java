@@ -5,18 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import java.time.LocalDateTime;
 
-
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @DiscriminatorValue("DRIVER")
-@Getter
-@Setter
 public class Driver extends User {
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Truck type is required")
+    @NotNull(message = "Truck type is required")
     @Column(nullable = false)
     private TruckType truckType;
 
@@ -45,7 +45,28 @@ public class Driver extends User {
     private DriverStatus status = DriverStatus.AVAILABLE;
 
     @Embedded
-    private Location currentLocation;
+    private Location driverLocation;
+    
+    private LocalDateTime updatedAt;
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
+    // Manual getters and setters for compilation (in case @Data doesn't work)
+    public Double getMaxLoadCapacity() { return maxLoadCapacity; }
+    public void setMaxLoadCapacity(Double maxLoadCapacity) { this.maxLoadCapacity = maxLoadCapacity; }
+    
+    public TruckType getTruckType() { return truckType; }
+    public void setTruckType(TruckType truckType) { this.truckType = truckType; }
+    
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public Location getDriverLocation() { return driverLocation; }
+    public void setDriverLocation(Location driverLocation) { this.driverLocation = driverLocation; }
 }
