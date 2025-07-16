@@ -45,7 +45,45 @@ public class Driver extends User {
     private DriverStatus status = DriverStatus.AVAILABLE;
 
     @Embedded
-    private Location currentLocation;
+    private Location locationDetails;
 
+    // Custom getter for currentLocation that converts Location to String
+    public String getCurrentLocation() {
+        if (locationDetails != null) {
+            return locationDetails.getLatitude() + "," + locationDetails.getLongitude();
+        }
+        return super.getCurrentLocation();
+    }
 
+    // Custom setter for currentLocation that parses String to Location
+    public void setCurrentLocation(String locationString) {
+        if (locationString != null && !locationString.isEmpty()) {
+            String[] parts = locationString.split(",");
+            if (parts.length == 2) {
+                try {
+                    double lat = Double.parseDouble(parts[0].trim());
+                    double lng = Double.parseDouble(parts[1].trim());
+                    this.locationDetails = new Location(lat, lng, null);
+                } catch (NumberFormatException e) {
+                    // If parsing fails, fall back to parent class behavior
+                    super.setCurrentLocation(locationString);
+                }
+            } else {
+                // If format is not lat,lng, fall back to parent class behavior
+                super.setCurrentLocation(locationString);
+            }
+        } else {
+            super.setCurrentLocation(locationString);
+        }
+    }
+
+    // Additional getter for Location object
+    public Location getLocationDetails() {
+        return locationDetails;
+    }
+
+    // Additional setter for Location object
+    public void setLocationDetails(Location locationDetails) {
+        this.locationDetails = locationDetails;
+    }
 }

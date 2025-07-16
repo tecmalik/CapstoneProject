@@ -1,9 +1,6 @@
 package com.example.truckstorm.data.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -27,12 +24,13 @@ public class Load {
     @NotNull(message = "Weight is required")
     @Positive(message = "Weight must be positive")
     private Double weight;
-    @NotBlank(message = "Load type is required")
+    
+    @NotNull(message = "Load type is required")
+    @Enumerated(EnumType.STRING)
     private LoadType loadType;
 
+    @Enumerated(EnumType.STRING)
     private LoadStatus loadStatus;
 
     private String clientId;
-
-
 }
